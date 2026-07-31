@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Federico Marvin — Luthier &amp; Tattoo Artist</title>
+<meta name="description" content="Federico Marvin. Luthier de guitarras y bajos. Tatuador. Dos oficios, las mismas manos.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   FEDERICO MARVIN — maqueta
+   Identidad dual: cada oficio tiene su propia voz tipográfica.
+   Luthier  → Fraunces (serif, madera, taller)
+   Tattoo   → Bebas Neue (cartel de estudio, flash art)
+   ============================================================ */
+:root{
+  --negro:#0d0c0f;
+  --carbon:#17151a;
+  --hueso:#ece6da;
+  --hueso-suave:rgba(236,230,218,.78);
+  --ambar:#d19a52;        /* barniz / madera */
+  --ambar-oscuro:#8a5a24;
+  --tinta:#b8453e;        /* rojo tradicional de flash */
+  --tinta-oscura:#5e1f1c;
+  --borde:rgba(236,230,218,.12);
+  --transicion-panel:.85s cubic-bezier(.65,0,.15,1);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--negro);
+  color:var(--hueso);
+  font-family:'Inter',sans-serif;
+  font-weight:300;
+  line-height:1.6;
+  overflow-x:hidden;
+}
+::selection{background:var(--ambar);color:var(--negro)}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+
+/* ---------- HERO: split expandible ---------- */
+.hero{
+  position:relative;
+  height:100vh;
+  height:100dvh;
+  display:flex;
+  flex-direction:column;
+}
+.hero-nombre{
+  position:absolute;
+  top:0;left:0;right:0;
+  z-index:10;
+  text-align:center;
+  padding:2.2rem 1rem 1.6rem;
+  pointer-events:none;
+  background:linear-gradient(to bottom, rgba(0,0,0,.55) 0%, rgba(0,0,0,.28) 65%, transparent 100%);
+}
+.hero-nombre h1{
+  font-family:'Fraunces',serif;
+  font-weight:400;
+  font-size:clamp(1.9rem,4.5vw,3.4rem);
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  text-shadow:0 1px 4px rgba(0,0,0,.9), 0 4px 26px rgba(0,0,0,.7);
+}
+.hero-nombre h1 span{font-style:italic;font-weight:300}
+.hero-nombre .amp{
+  display:block;
+  font-family:'Fraunces',serif;
+  font-style:italic;
+  font-size:clamp(.85rem,1.4vw,1.05rem);
+  letter-spacing:.42em;
+  text-transform:uppercase;
+  color:var(--hueso-suave);
+  margin-top:.4rem;
+  text-shadow:0 1px 4px rgba(0,0,0,.85);
+}
+.paneles{
+  flex:1;
+  display:flex;
+  min-height:0;
+}
+.panel{
+  position:relative;
+  flex:1;
+  overflow:hidden;
+  cursor:pointer;
+  transition:flex var(--transicion-panel);
+  isolation:isolate;
+}
+/* al pasar el cursor, el panel toma casi todo y deja al otro como margen */
+.paneles:has(.panel:hover) .panel{flex:.12}
+.paneles:has(.panel:hover) .panel:hover{flex:1}
+.panel-fondo{
+  position:absolute;inset:0;
+  background-size:cover;
+  background-position:center;
+  transition:transform 1.4s cubic-bezier(.2,.6,.2,1), filter .8s ease;
+  filter:brightness(.78);
+  transform:scale(1.06);
+}
+.panel:hover .panel-fondo{
+  filter:brightness(.92);
+  transform:scale(1);
+}
+.panel--luthier .panel-fondo{
+  background-image:
+    linear-gradient(160deg, rgba(13,12,15,.2), rgba(13,12,15,.65)),
+    url('img-luthier.jpg');
+}
+.panel--tattoo .panel-fondo{
+  background-image:
+    linear-gradient(200deg, rgba(13,12,15,.2), rgba(13,12,15,.65)),
+    url('img-tattoo.jpg');
+  background-position:center 65%;
+}
+
+.panel-borde{
+  position:absolute;inset:1.1rem;
+  border:1px solid var(--borde);
+  z-index:2;
+  pointer-events:none;
+  transition:inset .6s ease, border-color .6s ease;
+}
+.panel:hover .panel-borde{inset:1.6rem}
+.panel--luthier:hover .panel-borde{border-color:rgba(209,154,82,.5)}
+.panel--tattoo:hover .panel-borde{border-color:rgba(184,69,62,.55)}
+
+.panel-contenido{
+  position:absolute;inset:0;
+  z-index:3;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+  padding:clamp(1.8rem,4vw,4rem);
+}
+.panel-etiqueta{
+  font-size:.68rem;
+  letter-spacing:.4em;
+  text-transform:uppercase;
+  color:var(--hueso-suave);
+  margin-bottom:.8rem;
+  white-space:nowrap;
+  text-shadow:0 1px 4px rgba(0,0,0,.85);
+}
+.panel--luthier .panel-titulo{
+  font-family:'Fraunces',serif;
+  font-weight:350;
+  font-style:italic;
+  font-size:clamp(2.6rem,6vw,5.5rem);
+  line-height:.95;
+  text-shadow:0 2px 12px rgba(0,0,0,.6);
+}
+.panel--tattoo .panel-contenido{align-items:flex-end;text-align:right}
+.panel--tattoo .panel-titulo{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(2.8rem,6.5vw,6rem);
+  letter-spacing:.06em;
+  line-height:.9;
+  text-shadow:0 2px 12px rgba(0,0,0,.6);
+}
+.panel-sub{
+  max-width:34ch;
+  color:var(--hueso-suave);
+  font-size:.92rem;
+  margin-top:1rem;
+  opacity:0;
+  transform:translateY(12px);
+  transition:opacity .6s ease .15s, transform .6s ease .15s;
+  text-shadow:0 1px 4px rgba(0,0,0,.85);
+}
+.panel:hover .panel-sub{opacity:1;transform:none}
+.panel-cta{
+  margin-top:1.4rem;
+  display:inline-flex;
+  align-items:center;
+  gap:.6rem;
+  font-size:.72rem;
+  letter-spacing:.3em;
+  text-transform:uppercase;
+  opacity:0;
+  transform:translateY(12px);
+  transition:opacity .6s ease .25s, transform .6s ease .25s;
+  text-shadow:0 1px 4px rgba(0,0,0,.85);
+}
+.panel:hover .panel-cta{opacity:1;transform:none}
+.panel--luthier .panel-cta{color:var(--ambar)}
+.panel--tattoo .panel-cta{color:var(--tinta)}
+.panel-cta::after{content:"";width:2.4rem;height:1px;background:currentColor}
+/* contenido oculto cuando el panel queda comprimido */
+.paneles:has(.panel:hover) .panel:not(:hover) .panel-contenido{
+  opacity:0;
+  transition:opacity .35s ease;
+}
+
+/* ---------- SECCIONES ---------- */
+.seccion{
+  padding:clamp(4.5rem,9vw,8rem) clamp(1.4rem,6vw,6rem);
+  position:relative;
+}
+.contenedor{max-width:1200px;margin:0 auto}
+.eyebrow{
+  font-size:.68rem;
+  letter-spacing:.4em;
+  text-transform:uppercase;
+  color:var(--hueso-suave);
+  display:flex;align-items:center;gap:1rem;
+  margin-bottom:1.6rem;
+}
+.eyebrow::before{content:"";width:2.6rem;height:1px;background:currentColor;opacity:.5}
+
+/* Sección Luthier */
+.sec-luthier{background:var(--carbon);border-top:1px solid var(--borde)}
+.sec-luthier .eyebrow{color:var(--ambar)}
+.luthier-cabecera{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:2rem;
+  flex-wrap:wrap;
+}
+.luthier-cabecera .titulo-serif{margin-bottom:0}
+.luthier-estilos{
+  font-size:.72rem;
+  letter-spacing:.3em;
+  text-transform:uppercase;
+  color:var(--hueso-suave);
+  padding-bottom:.5rem;
+}
+.titulo-serif{
+  font-family:'Fraunces',serif;
+  font-weight:350;
+  font-size:clamp(2rem,4.2vw,3.4rem);
+  line-height:1.05;
+  margin-bottom:1.4rem;
+}
+.titulo-serif em{font-style:italic;color:var(--ambar)}
+.texto-suave{color:var(--hueso-suave);max-width:52ch}
+.lista-servicios{
+  list-style:none;
+  margin-top:.6rem;
+  border-top:1px solid var(--borde);
+}
+.lista-servicios li{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  gap:1.5rem;
+  padding:1.15rem 0;
+  border-bottom:1px solid var(--borde);
+  transition:padding-left .35s ease;
+}
+.lista-servicios li:hover{padding-left:.6rem}
+.lista-servicios .nombre{
+  font-family:'Fraunces',serif;
+  font-size:1.15rem;
+}
+.lista-servicios .precio{
+  font-family:'Fraunces',serif;
+  font-weight:400;
+  font-size:1.15rem;
+  text-align:right;
+  color:var(--hueso);
+}
+.sec-luthier .lista-servicios .precio{color:var(--ambar)}
+.sec-luthier .lista-servicios li:hover .nombre{color:var(--ambar)}
+.mosaico-luthier{margin-top:3.2rem}
+.sec-luthier .mosaico-item:hover{border-color:rgba(209,154,82,.5)}
+.mosaico-tocando{object-position:50% 12%}
+
+/* Sección Tattoo */
+.sec-tattoo{background:var(--negro);border-top:1px solid var(--borde)}
+.sec-tattoo .eyebrow{color:var(--tinta)}
+.tattoo-cabecera{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:2rem;
+  flex-wrap:wrap;
+  margin-bottom:2.2rem;
+}
+.tattoo-cabecera .titulo-bebas{margin-bottom:0}
+.tattoo-estilos{
+  font-size:.72rem;
+  letter-spacing:.3em;
+  text-transform:uppercase;
+  color:var(--hueso-suave);
+  padding-bottom:.5rem;
+}
+/* Mosaico: las fotos son el contenido principal de la sección */
+.mosaico{
+  display:grid;
+  grid-template-columns:1.5fr 1fr;
+  grid-template-rows:repeat(2, minmax(0,1fr));
+  gap:.9rem;
+  margin-bottom:2.8rem;
+}
+.mosaico-item{
+  width:100%;height:100%;
+  object-fit:cover;
+  border:1px solid var(--borde);
+  transition:filter .35s ease, border-color .35s ease;
+  filter:brightness(.94);
+}
+.mosaico-item:hover{
+  filter:brightness(1.02);
+  border-color:rgba(184,69,62,.55);
+}
+.mosaico-principal{
+  grid-row:1 / span 2;
+  aspect-ratio:auto;
+  min-height:520px;
+}
+.mosaico .mosaico-item:not(.mosaico-principal){min-height:0;aspect-ratio:4/3}
+.mosaico-navaja{object-position:50% 32%}
+.lista-tattoo{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:0 3rem;
+  border-top:1px solid var(--borde);
+}
+.titulo-bebas{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(2.6rem,5.5vw,4.6rem);
+  letter-spacing:.05em;
+  line-height:.95;
+  margin-bottom:1.4rem;
+}
+.titulo-bebas span{color:var(--tinta)}
+.sec-tattoo .lista-servicios .nombre{
+  font-family:'Bebas Neue',sans-serif;
+  letter-spacing:.06em;
+  font-size:1.3rem;
+}
+.sec-tattoo .lista-servicios .precio{
+  font-family:'Bebas Neue',sans-serif;
+  letter-spacing:.06em;
+  font-size:1.3rem;
+  color:var(--tinta);
+}
+.sec-tattoo .lista-servicios li:hover .nombre{color:var(--tinta)}
+
+/* Avatar Federico */
+.avatar{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:1rem;
+  margin-bottom:2.4rem;
+}
+.avatar img{
+  width:132px;height:132px;
+  border-radius:50%;
+  object-fit:cover;
+  object-position:center 30%;
+  border:2px solid var(--borde);
+  padding:5px;
+  background:
+    linear-gradient(var(--carbon),var(--carbon)) padding-box,
+    linear-gradient(135deg,var(--ambar),var(--tinta)) border-box;
+  border:2px solid transparent;
+  box-shadow:0 10px 40px rgba(0,0,0,.5);
+}
+.avatar-nombre{
+  font-family:'Fraunces',serif;
+  font-size:1.25rem;
+  letter-spacing:.08em;
+}
+.avatar-rol{
+  font-size:.65rem;
+  letter-spacing:.35em;
+  text-transform:uppercase;
+  color:var(--hueso-suave);
+}
+
+/* Contacto */
+.contacto{
+  background:var(--negro);
+  border-top:1px solid var(--borde);
+  text-align:center;
+}
+.contacto .titulo-serif{margin-bottom:.8rem}
+.contacto-links{
+  display:flex;
+  justify-content:center;
+  gap:2.5rem;
+  margin-top:2.2rem;
+  flex-wrap:wrap;
+  font-size:.75rem;
+  letter-spacing:.28em;
+  text-transform:uppercase;
+}
+.contacto-links a{
+  color:var(--hueso-suave);
+  padding-bottom:.35rem;
+  border-bottom:1px solid transparent;
+  transition:color .3s ease,border-color .3s ease;
+}
+.contacto-links a:hover{
+  color:var(--hueso);
+  border-image:linear-gradient(90deg,var(--ambar),var(--tinta)) 1;
+}
+footer{
+  padding:1.6rem;
+  text-align:center;
+  font-size:.68rem;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:rgba(236,230,218,.55);
+  border-top:1px solid var(--borde);
+  background:var(--negro);
+  display:flex;
+  flex-direction:column;
+  gap:.5rem;
+}
+footer .credito{font-size:.6rem;letter-spacing:.25em}
+footer .credito a{
+  color:rgba(236,230,218,.7);
+  transition:color .3s ease;
+}
+footer .credito a:hover{color:var(--ambar)}
+
+/* ---------- BOTÓN WHATSAPP ---------- */
+.wsp{
+  position:fixed;
+  bottom:1.4rem;right:1.4rem;
+  z-index:100;
+  width:58px;height:58px;
+  border-radius:50%;
+  background:#25d366;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 6px 24px rgba(0,0,0,.45);
+  transition:transform .3s cubic-bezier(.34,1.56,.64,1), box-shadow .3s ease;
+}
+.wsp:hover{
+  transform:scale(1.1);
+  box-shadow:0 10px 32px rgba(37,211,102,.35);
+}
+.wsp svg{width:30px;height:30px;fill:#fff}
+.wsp::before{
+  content:"";
+  position:absolute;inset:0;
+  border-radius:50%;
+  border:1px solid rgba(37,211,102,.6);
+  animation:pulso 2.4s ease-out infinite;
+}
+@keyframes pulso{
+  0%{transform:scale(1);opacity:.7}
+  100%{transform:scale(1.7);opacity:0}
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width:820px){
+  .paneles{flex-direction:column}
+  .paneles:has(.panel:hover) .panel{flex:.3}
+  .paneles:has(.panel:hover) .panel:hover{flex:1}
+  .panel--tattoo .panel-contenido{align-items:flex-start;text-align:left}
+  .panel-sub,.panel-cta{opacity:1;transform:none}
+  .mosaico{grid-template-columns:1fr;grid-template-rows:none}
+  .mosaico-principal{grid-row:auto;min-height:0;aspect-ratio:4/5}
+  .lista-tattoo{grid-template-columns:1fr}
+  .hero-nombre{padding-top:1.4rem}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+
+<!-- ================= HERO ================= -->
+<header class="hero">
+  <div class="hero-nombre">
+    <h1>Federico <span>Marvin</span></h1>
+    <div class="amp">Luthier &nbsp;·&nbsp; Tattoo Artist</div>
+  </div>
+
+  <div class="paneles">
+    <!-- PANEL LUTHIER -->
+    <a class="panel panel--luthier" href="#luthier" aria-label="Sección Luthier">
+      <div class="panel-fondo"></div>
+      <div class="panel-borde"></div>
+      <div class="panel-contenido">
+        <div class="panel-etiqueta">Guitarras &amp; Bajos</div>
+        <div class="panel-titulo">Luthier</div>
+        <p class="panel-sub">Construcción, reparación y calibración. Cada instrumento tratado como una pieza única.</p>
+        <span class="panel-cta">Ver el taller</span>
+      </div>
+    </a>
+
+    <!-- PANEL TATTOO -->
+    <a class="panel panel--tattoo" href="#tattoo" aria-label="Sección Tattoo">
+      <div class="panel-fondo"></div>
+      <div class="panel-borde"></div>
+      <div class="panel-contenido">
+        <div class="panel-etiqueta">Estudio &amp; Diseño</div>
+        <div class="panel-titulo">Tattoo Artist</div>
+        <p class="panel-sub">Diseños propios. estilos Blackwork, tradicional y ornamental.</p>
+        <span class="panel-cta">Ver trabajos</span>
+      </div>
+    </a>
+  </div>
+</header>
+
+<!-- ================= TATTOO ================= -->
+<section id="tattoo" class="seccion sec-tattoo">
+  <div class="contenedor">
+    <div class="eyebrow">Tattoo</div>
+    <div class="tattoo-cabecera">
+      <h2 class="titulo-bebas">Más de 12 años<br>de <span>experiencia</span>.</h2>
+      <div class="tattoo-estilos">Tradicional · Blackwork · Ornamental</div>
+    </div>
+
+    <div class="mosaico">
+      <img class="mosaico-item mosaico-principal" src="tattoo-01.jpg" alt="Ornamental blackwork en antebrazo">
+      <img class="mosaico-item" src="tattoo-03.jpg" alt="Gorila estilo tradicional">
+      <img class="mosaico-item mosaico-navaja" src="tattoo-02.jpg" alt="Blackwork navaja mariposa">
+    </div>
+
+    <div class="eyebrow">Lista de precios · Blanco y negro</div>
+    <ul class="lista-servicios">
+      <li><span class="nombre">Pequeño (hasta 5 cm)</span><span class="precio">ARS 35.000</span></li>
+      <li><span class="nombre">Mediano (5 a 15 cm)</span><span class="precio">Desde ARS 60.000</span></li>
+      <li><span class="nombre">Grande (+15 cm)</span><span class="precio">Desde ARS 110.000</span></li>
+      <li><span class="nombre">Diseños a color</span><span class="precio">A convenir</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ================= LUTHIER ================= -->
+<section id="luthier" class="seccion sec-luthier">
+  <div class="contenedor">
+    <div class="eyebrow">El taller</div>
+    <div class="luthier-cabecera">
+      <h2 class="titulo-serif">Guitarras y bajos<br>que <em>vuelven a sonar</em>.</h2>
+      <div class="luthier-estilos">Eléctricas · Acústicas · Bajos</div>
+    </div>
+
+    <div class="mosaico mosaico-luthier">
+      <img class="mosaico-item mosaico-principal" src="taller-01.jpg" alt="Guitarras en el taller de Federico Marvin">
+      <img class="mosaico-item" src="taller-02.jpg" alt="Guitarra custom NEWEN terminada">
+      <img class="mosaico-item mosaico-tocando" src="taller-03.jpg" alt="Federico Marvin tocando una guitarra Flying V">
+    </div>
+
+    <div class="eyebrow">Lista de precios</div>
+    <ul class="lista-servicios">
+      <li><span class="nombre">Calibración completa</span><span class="precio">ARS 45.000</span></li>
+      <li><span class="nombre">Reparaciones</span><span class="precio">Desde ARS 30.000</span></li>
+      <li><span class="nombre">Restauración</span><span class="precio">Desde ARS 90.000</span></li>
+      <li><span class="nombre">Construcción a medida</span><span class="precio">A convenir</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ================= CONTACTO ================= -->
+<section id="contacto" class="seccion contacto">
+  <div class="contenedor">
+    <div class="avatar">
+      <img src="img-federico.jpg" alt="Federico Marvin en su taller">
+      <div class="avatar-nombre">Federico Marvin</div>
+      <div class="avatar-rol">Luthier · Tattoo Artist</div>
+    </div>
+    <h2 class="titulo-serif">Hacé tu <em>consulta</em></h2>
+    <p class="texto-suave" style="margin:0 auto">Comunicate por WhatsApp.</p>
+    <div class="contacto-links">
+      <!-- REEMPLAZAR: número y usuarios reales -->
+      <a href="https://wa.me/5493416248302" target="_blank" rel="noopener">WhatsApp</a>
+      <a href="https://instagram.com/usuario" target="_blank" rel="noopener">Instagram</a>
+      <a href="mailto:contacto@ejemplo.com">Email</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div>© 2026 Federico Marvin — Luthier &amp; Tattoo Artist</div>
+  <div class="credito">Desarrollado por <a href="#" target="_blank" rel="noopener">leontelletxea</a></div>
+</footer>
+
+<!-- ================= BOTÓN WHATSAPP ================= -->
+<a class="wsp" href="https://wa.me/5493416248302" target="_blank" rel="noopener" aria-label="Escribir por WhatsApp">
+  <svg viewBox="0 0 32 32" aria-hidden="true">
+    <path d="M16 2.9C8.8 2.9 2.9 8.8 2.9 16c0 2.6.8 5 2.1 7L2.7 29.3l6.5-2.2c1.9 1.2 4.2 1.8 6.8 1.8 7.2 0 13.1-5.9 13.1-13.1S23.2 2.9 16 2.9zm0 23.7c-2.3 0-4.4-.7-6.1-1.8l-.4-.3-3.9 1.3 1.3-3.8-.3-.4C5.4 20 4.8 18 4.8 16 4.8 9.8 9.8 4.8 16 4.8S27.2 9.8 27.2 16 22.2 26.6 16 26.6zm6.1-8c-.3-.2-2-1-2.3-1.1-.3-.1-.5-.2-.7.2-.2.3-.8 1.1-1 1.3-.2.2-.4.2-.7.1-.3-.2-1.4-.5-2.7-1.7-1-.9-1.7-2-1.9-2.3-.2-.3 0-.5.1-.7l.5-.6c.2-.2.2-.3.3-.6.1-.2 0-.4 0-.6-.1-.2-.7-1.8-1-2.4-.3-.6-.5-.5-.7-.6h-.6c-.2 0-.6.1-.9.4-.3.3-1.1 1.1-1.1 2.7s1.2 3.2 1.3 3.4c.2.2 2.3 3.5 5.6 4.9.8.3 1.4.5 1.9.7.8.2 1.5.2 2.1.1.6-.1 2-.8 2.2-1.6.3-.8.3-1.5.2-1.6-.1-.2-.3-.3-.6-.4z"/>
+  </svg>
+</a>
+
+<script>
+// En mobile no hay hover: el tap expande el panel; segundo tap navega a la sección
+if (window.matchMedia('(hover: none)').matches) {
+  document.querySelectorAll('.panel').forEach(panel => {
+    panel.addEventListener('click', e => {
+      if (!panel.classList.contains('activo')) {
+        e.preventDefault();
+        document.querySelectorAll('.panel').forEach(p => p.classList.remove('activo'));
+        panel.classList.add('activo');
+        panel.closest('.paneles').classList.add('con-activo');
+      }
+    });
+  });
+  const css = document.createElement('style');
+  css.textContent = `
+    .paneles.con-activo .panel{flex:.3}
+    .paneles.con-activo .panel.activo{flex:1}
+    .paneles.con-activo .panel.activo .panel-fondo{filter:brightness(.92);transform:scale(1)}
+    .paneles.con-activo .panel:not(.activo) .panel-contenido{opacity:0;transition:opacity .35s ease}
+  `;
+  document.head.appendChild(css);
+}
+</script>
+</body>
+</html>

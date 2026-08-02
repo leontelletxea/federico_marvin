@@ -10,11 +10,9 @@
   --hueso:#ece6da;
   --hueso-suave:rgba(236,230,218,.78);
   --ambar:#d19a52;        /* barniz / madera */
-  --ambar-oscuro:#8a5a24;
   --tinta:#b8453e;        /* rojo tradicional de flash */
-  --tinta-oscura:#5e1f1c;
   --borde:rgba(236,230,218,.12);
-  --transicion-panel:.85s cubic-bezier(.65,0,.15,1);
+  --transicion-panel:1.25s cubic-bezier(.65,0,.15,1);
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
@@ -87,7 +85,7 @@ a{color:inherit;text-decoration:none}
   position:absolute;inset:0;
   background-size:cover;
   background-position:center;
-  transition:transform 1.4s cubic-bezier(.2,.6,.2,1), filter .8s ease;
+  transition:transform 2s cubic-bezier(.2,.6,.2,1), filter 1.1s ease;
   filter:brightness(.78);
   transform:scale(1.06);
 }
@@ -112,7 +110,7 @@ a{color:inherit;text-decoration:none}
   border:1px solid var(--borde);
   z-index:2;
   pointer-events:none;
-  transition:inset .6s ease, border-color .6s ease;
+  transition:inset .9s ease, border-color .9s ease;
 }
 .panel:hover .panel-borde{inset:1.6rem}
 .panel--luthier:hover .panel-borde{border-color:rgba(209,154,82,.5)}
@@ -158,7 +156,7 @@ a{color:inherit;text-decoration:none}
   margin-top:1rem;
   opacity:0;
   transform:translateY(12px);
-  transition:opacity .6s ease .15s, transform .6s ease .15s;
+  transition:opacity .8s ease .3s, transform .8s ease .3s;
   text-shadow:0 1px 4px rgba(0,0,0,.85);
 }
 .panel:hover .panel-sub{opacity:1;transform:none}
@@ -172,7 +170,7 @@ a{color:inherit;text-decoration:none}
   text-transform:uppercase;
   opacity:0;
   transform:translateY(12px);
-  transition:opacity .6s ease .25s, transform .6s ease .25s;
+  transition:opacity .8s ease .45s, transform .8s ease .45s;
   text-shadow:0 1px 4px rgba(0,0,0,.85);
 }
 .panel:hover .panel-cta{opacity:1;transform:none}
@@ -182,7 +180,7 @@ a{color:inherit;text-decoration:none}
 /* contenido oculto cuando el panel queda comprimido */
 .paneles:has(.panel:hover) .panel:not(:hover) .panel-contenido{
   opacity:0;
-  transition:opacity .35s ease;
+  transition:opacity .5s ease;
 }
 
 /* En dispositivos sin hover el estado lo maneja React (clases .activo / .con-activo):
@@ -192,7 +190,7 @@ a{color:inherit;text-decoration:none}
 .paneles.con-activo .panel.activo .panel-fondo{filter:brightness(.92);transform:scale(1)}
 .paneles.con-activo .panel.activo .panel-sub,
 .paneles.con-activo .panel.activo .panel-cta{opacity:1;transform:none}
-.paneles.con-activo .panel:not(.activo) .panel-contenido{opacity:0;transition:opacity .35s ease}
+.paneles.con-activo .panel:not(.activo) .panel-contenido{opacity:0;transition:opacity .5s ease}
 
 /* ---------- SECCIONES ---------- */
 .seccion{
@@ -309,17 +307,10 @@ a{color:inherit;text-decoration:none}
 }
 .mosaico-principal{
   grid-row:1 / span 2;
-  aspect-ratio:auto;
   min-height:520px;
 }
 .mosaico .mosaico-item:not(.mosaico-principal){min-height:0;aspect-ratio:4/3}
 .mosaico-navaja{object-position:50% 32%}
-.lista-tattoo{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:0 3rem;
-  border-top:1px solid var(--borde);
-}
 .titulo-bebas{
   font-family:'Bebas Neue',sans-serif;
   font-size:clamp(2.6rem,5.5vw,4.6rem);
@@ -354,7 +345,6 @@ a{color:inherit;text-decoration:none}
   border-radius:50%;
   object-fit:cover;
   object-position:center 30%;
-  border:2px solid var(--borde);
   padding:5px;
   background:
     linear-gradient(var(--carbon),var(--carbon)) padding-box,
@@ -460,7 +450,6 @@ footer .credito a:hover{color:var(--ambar)}
   .panel-sub,.panel-cta{opacity:1;transform:none}
   .mosaico{grid-template-columns:1fr;grid-template-rows:none}
   .mosaico-principal{grid-row:auto;min-height:0;aspect-ratio:4/5}
-  .lista-tattoo{grid-template-columns:1fr}
   .hero-nombre{padding-top:1.4rem}
 }
 @media (prefers-reduced-motion:reduce){

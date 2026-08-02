@@ -38,10 +38,10 @@ Paleta completa (variables CSS en `:root`, en
 - `--carbon #17151a` — fondo de la sección luthier
 - `--hueso #ece6da` — texto principal
 - `--hueso-suave rgba(236,230,218,.78)` — texto secundario
-- `--ambar #d19a52` / `--ambar-oscuro #8a5a24` — acento luthier
-- `--tinta #b8453e` / `--tinta-oscura #5e1f1c` — acento tattoo
+- `--ambar #d19a52` — acento luthier
+- `--tinta #b8453e` — acento tattoo
 - `--borde rgba(236,230,218,.12)` — bordes hairline
-- `--transicion-panel .85s cubic-bezier(.65,0,.15,1)` — timing del hero
+- `--transicion-panel 1.25s cubic-bezier(.65,0,.15,1)` — timing del hero
 
 Al tocar colores, respetar el pareo oficio↔color: mezclarlos rompe la lectura
 del sitio.

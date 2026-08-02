@@ -1,4 +1,5 @@
 import ListaPrecios from './ListaPrecios'
+import InstrumentosVenta from './InstrumentosVenta'
 import taller01 from '../assets/img/taller-01.jpg'
 import taller02 from '../assets/img/taller-02.jpg'
 import taller03 from '../assets/img/taller-03.jpg'
@@ -21,6 +22,8 @@ export default function SeccionLuthier() {
 
         <div className="eyebrow">Lista de precios</div>
         <ListaPrecios tipo="luthier" />
+
+        <InstrumentosVenta />
       </div>
     </section>
   )

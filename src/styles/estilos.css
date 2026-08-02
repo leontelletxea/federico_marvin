@@ -268,6 +268,90 @@ a{color:inherit;text-decoration:none}
 .sec-luthier .mosaico-item:hover{border-color:rgba(209,154,82,.5)}
 .mosaico-tocando{object-position:50% 12%}
 
+/* Instrumentos en venta (abajo de la lista de precios de luthería).
+   Se cargan desde un Google Form; la grilla se acomoda sola a la cantidad. */
+.lista-servicios + .eyebrow{margin-top:3.4rem}
+.instrumentos{
+  list-style:none;
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(230px,1fr));
+  gap:clamp(1.2rem,2.5vw,2rem);
+}
+.instrumento{
+  display:flex;
+  flex-direction:column;
+}
+.instrumento-media{position:relative}
+.instrumento-foto{
+  width:100%;
+  aspect-ratio:4/5;
+  object-fit:cover;
+  border:1px solid var(--borde);
+  border-radius:var(--radio);
+  filter:brightness(.94);
+  transition:filter .35s ease, border-color .35s ease;
+}
+.instrumento:not(.instrumento--vendido):hover .instrumento-foto{
+  filter:brightness(1.02);
+  border-color:rgba(209,154,82,.5);
+}
+/* Vendido: la foto se apaga y se despinta, así la grilla se lee de un vistazo
+   —lo disponible tiene color, lo vendido no— sin depender de leer el sello. */
+.instrumento--vendido .instrumento-foto{filter:grayscale(1) brightness(.45)}
+.instrumento--vendido .instrumento-nombre,
+.instrumento--vendido .instrumento-desc{color:var(--hueso-suave);opacity:.6}
+.instrumento-sello{
+  position:absolute;
+  top:.7rem;left:.7rem;
+  padding:.4rem .7rem;
+  border:1px solid var(--borde);
+  border-radius:calc(var(--radio) - 5px);
+  background:rgba(13,12,15,.8);
+  backdrop-filter:blur(3px);
+  font-size:.58rem;
+  letter-spacing:.3em;
+  text-transform:uppercase;
+  color:var(--hueso);
+}
+/* fila cargada sin imagen: mantiene el hueco en vez de romper la grilla */
+.instrumento-sinfoto{
+  display:grid;
+  place-items:center;
+  background:linear-gradient(160deg,rgba(209,154,82,.08),transparent);
+  font-size:.62rem;
+  letter-spacing:.3em;
+  text-transform:uppercase;
+  color:var(--hueso-suave);
+}
+.instrumento-nombre{
+  font-family:'Fraunces',serif;
+  font-weight:350;
+  font-size:1.15rem;
+  line-height:1.25;
+  margin-top:1rem;
+}
+.instrumento-desc{
+  color:var(--hueso-suave);
+  font-size:.9rem;
+  margin-top:.4rem;
+}
+/* margin-top:auto alinea todos los "Consultar" al pie, aunque las
+   descripciones tengan distinto largo */
+.instrumento-cta{
+  margin-top:auto;
+  padding-top:1.1rem;
+  display:inline-flex;
+  align-items:center;
+  gap:.6rem;
+  font-size:.7rem;
+  letter-spacing:.3em;
+  text-transform:uppercase;
+  color:var(--ambar);
+  transition:gap .35s ease;
+}
+.instrumento-cta::after{content:"";width:2rem;height:1px;background:currentColor}
+.instrumento-cta:hover{gap:1.1rem}
+
 /* Sección Tattoo */
 .sec-tattoo{background:var(--negro);border-top:1px solid var(--borde)}
 .sec-tattoo .eyebrow{color:var(--tinta)}

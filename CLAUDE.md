@@ -91,12 +91,15 @@ src/
   App.jsx                       # orden de la página
   styles/estilos.css            # TODO el CSS del sitio (archivo único)
   data/config.js                # lee el .env y exporta los valores tipados
-  hooks/usePrecios.js           # fetch de precios desde Google Sheets
+  hooks/usePlanilla.js          # fetch + cache por URL de una hoja
+  hooks/usePrecios.js           # filtra la hoja de precios por tipo
+  hooks/useInstrumentos.js      # hoja del Google Form + URL de foto de Drive
   components/
     Hero.jsx                    # header con los dos paneles expandibles
     SeccionTattoo.jsx           # mosaico + lista de precios tattoo
     SeccionLuthier.jsx          # mosaico + lista de precios luthier
     ListaPrecios.jsx            # <ul> de servicios (compartido por ambas secciones)
+    InstrumentosVenta.jsx       # grilla de instrumentos en venta (solo luthería)
     Ubicaciones.jsx             # firma (foto + nombre) + mapas del estudio y del taller
     Footer.jsx                  # footer + crédito del autor
     BotonWhatsapp.jsx           # botón flotante fijo
@@ -144,11 +147,14 @@ Las dos listas de precios **no están hardcodeadas**. Se leen en runtime desde u
 planilla de Google vía [opensheet](https://opensheet.elk.sh), que devuelve la
 hoja como JSON sin API key.
 
-- Endpoint: `https://opensheet.elk.sh/${SHEET_ID}/${SHEET_HOJA}` (la hoja por
-  índice; `1` es la primera).
-- Ambos salen del `.env` (`VITE_SHEET_ID`, `VITE_SHEET_HOJA`).
-- La planilla debe tener exactamente estas columnas (la primera fila son los
-  encabezados y se convierten en las claves del JSON):
+- Endpoint: `https://opensheet.elk.sh/${SHEET_ID}/${NOMBRE_DE_LA_HOJA}`.
+- **Las hojas se piden por nombre, no por índice.** opensheet acepta las dos
+  formas, pero el índice se rompe al reordenar pestañas: cuando se agregó la
+  hoja de instrumentos adelante, el índice `1` dejó de apuntar a los precios y
+  las dos listas quedaron vacías. Si se **renombra** una pestaña en la planilla,
+  hay que actualizar el nombre en `config.js`.
+- La hoja de precios se llama `Lista de precios` y debe tener exactamente estas columnas
+  (la primera fila son los encabezados y se convierten en las claves del JSON):
 
 | tipo | nombre | precio |
 |---|---|---|
@@ -162,9 +168,10 @@ cambiar la moneda o el formato, se cambia en la planilla.
 Para actualizar precios: editar la planilla y recargar el sitio. **No hace falta
 rebuild ni deploy.**
 
-Implementación en [src/hooks/usePrecios.js](src/hooks/usePrecios.js): el fetch se
-hace **una sola vez** y la promesa queda cacheada en memoria a nivel de módulo,
-así las dos secciones comparten el mismo pedido en lugar de disparar dos.
+Implementación: [src/hooks/usePlanilla.js](src/hooks/usePlanilla.js) hace el fetch
+y **cachea la promesa por URL** a nivel de módulo, así cada hoja se pide una sola
+vez aunque la usen varios componentes (las dos listas de precios comparten el
+mismo pedido). [usePrecios.js](src/hooks/usePrecios.js) solo filtra por `tipo`.
 
 **Si la planilla no responde, las listas quedan vacías.** El comentario del HTML
 original hablaba de "fallback al HTML hardcodeado", pero ese fallback nunca
@@ -172,6 +179,48 @@ existió: los `<ul>` estaban vacíos y se llenaban solo por JS. Si se quiere un
 fallback real, hay que agregar un array de precios por defecto en
 `usePrecios.js`. El error de red se traga en silencio a propósito: se prefiere
 una sección sin lista antes que un mensaje de error en la cara del cliente.
+
+## Instrumentos en venta
+
+Debajo de la lista de precios de luthería. Las filas las carga el cliente desde
+un **Google Form**, que escribe en la hoja `Instrumentos en venta` de la misma
+planilla. Columnas (las nombró el form, con acentos y espacios — si se reescribe
+una pregunta cambia la clave y hay que tocarla en
+[useInstrumentos.js](src/hooks/useInstrumentos.js)):
+
+| Marca temporal | Nombre del producto | Descripción | Foto | Vendido |
+|---|---|---|---|---|
+| 2/8/2026 2:34:17 | Ejemplo guitarra | Ejemplo de descripción | `https://drive.google.com/open?id=…` | `TRUE` |
+
+**`Vendido` no la genera el form**: es una columna agregada a mano, con casillas
+de verificación aplicadas al rango `E2:E100` (no a la columna entera: una casilla
+sin tildar vale `FALSE`, o sea que la fila deja de estar vacía y la API
+devolvería cientos de filas fantasma). El hook acepta `TRUE` y también `si`,
+`sí`, `x`, `1` o `vendido` escritos a mano. Si la columna no existe, todo cuenta
+como disponible.
+
+Se muestran **del más nuevo al más viejo** (el form agrega al final, así que el
+hook invierte el array) y **los vendidos van al final**. Las filas sin nombre se
+descartan: una respuesta incompleta no rompe la grilla, y de paso se filtran las
+filas que quedan ocupadas solo por una casilla sin tildar.
+
+Un instrumento vendido se muestra igual, con la foto en gris y apagada, un sello
+"Vendido" y sin el link de consulta. Es a propósito: para un luthier, lo vendido
+es prueba de que el taller produce y vende. Si se quiere ocultar en vez de
+mostrar, es filtrar por `vendido` en
+[InstrumentosVenta.jsx](src/components/InstrumentosVenta.jsx).
+
+**Las fotos son el punto frágil.** El form sube la imagen a Drive y en la celda
+deja un link *de página* (`drive.google.com/open?id=…`), que no sirve como `src`
+de un `<img>`. El hook extrae el ID y arma
+`https://drive.google.com/thumbnail?id=<ID>&sz=w1200`, que sí devuelve la imagen.
+Eso **exige que el archivo esté compartido como "cualquiera con el enlace"**; los
+archivos que sube un form no siempre lo están. Si una foto no aparece, revisar
+los permisos de la carpeta de respuestas en Drive antes de tocar código. Las
+filas sin foto muestran un placeholder en vez de romper la grilla.
+
+La hoja no tiene columna de precio: cada tarjeta cierra con "Consultar", que abre
+WhatsApp con el nombre del instrumento ya escrito en el mensaje.
 
 ## Ubicaciones
 

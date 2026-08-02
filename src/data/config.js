@@ -21,7 +21,15 @@ export const UBICACIONES = [
   },
 ]
 
-// Precios dinámicos desde Google Sheets.
-// Reemplazá SHEET_ID por el ID de tu planilla (ver CLAUDE.md).
+// Contenido dinámico desde Google Sheets (ver CLAUDE.md).
 export const SHEET_ID = '1Lx8EWrry6guBKAaXOzCD9l_zt_7jlhxxoH3j4hYJLzE'
-export const SHEET_URL = `https://opensheet.elk.sh/${SHEET_ID}/1`
+
+// Las hojas se piden POR NOMBRE, no por índice. opensheet acepta las dos formas,
+// pero el índice se rompe al reordenar o agregar pestañas: cuando entró la hoja
+// de instrumentos adelante, el índice 1 dejó de ser la de precios y las listas
+// quedaron vacías. Con el nombre, el orden de las pestañas deja de importar.
+// Si se renombra una pestaña en la planilla, hay que actualizarlo acá.
+const hoja = nombre => `https://opensheet.elk.sh/${SHEET_ID}/${encodeURIComponent(nombre)}`
+
+export const SHEET_URL = hoja('Lista de precios')
+export const SHEET_URL_INSTRUMENTOS = hoja('Instrumentos en venta')

@@ -18,15 +18,23 @@ const esVendido = valor => MARCAS.includes(String(valor ?? '').trim().toLowerCas
 
 // El form guarda la imagen en Drive y en la celda deja un link de página
 // (`drive.google.com/open?id=...`), que no sirve como src de un <img>.
-// `thumbnail` devuelve el archivo como imagen. Requiere que el archivo esté
-// compartido como "cualquiera con el enlace"; si no, la foto no carga.
-function fotoDeDrive(valor) {
+// Se extrae solo el ID: la URL la arma el componente, que es el que sabe a qué
+// tamaño se dibuja la foto y puede reintentar contra el otro host si una falla.
+// Requiere que el archivo esté compartido como "cualquiera con el enlace".
+function idDeDrive(valor) {
   if (!valor) return null
   // si el form permite varios archivos, la celda trae los links separados por coma
   const primero = String(valor).split(',')[0].trim()
   const id = primero.match(/[?&]id=([-\w]+)/) || primero.match(/\/d\/([-\w]+)/)
-  return id ? `https://drive.google.com/thumbnail?id=${id[1]}&sz=w1200` : null
+  return id ? id[1] : null
 }
+
+// Los dos endpoints que sirven el mismo archivo de Drive. Si el primero falla
+// (Drive limita por momentos), el componente reintenta con el segundo.
+export const urlFoto = (id, ancho) =>
+  `https://drive.google.com/thumbnail?id=${id}&sz=w${ancho}`
+export const urlFotoAlterna = (id, ancho) =>
+  `https://lh3.googleusercontent.com/d/${id}=w${ancho}`
 
 /**
  * Instrumentos en venta, del más nuevo al más viejo (el form agrega al final),
@@ -35,7 +43,7 @@ function fotoDeDrive(valor) {
  * y de paso filtra las filas que quedan "ocupadas" por una casilla sin tildar.
  * El precio se muestra tal cual lo escribió el cliente en el form, sin formatear,
  * igual que en la lista de precios.
- * @returns {Array<{nombre:string, descripcion:string, precio:string, foto:string|null, vendido:boolean}>}
+ * @returns {Array<{nombre:string, descripcion:string, precio:string, fotoId:string|null, vendido:boolean}>}
  */
 export function useInstrumentos() {
   return usePlanilla(SHEET_URL_INSTRUMENTOS)
@@ -44,7 +52,7 @@ export function useInstrumentos() {
       nombre: fila[NOMBRE].trim(),
       descripcion: (fila[DESCRIPCION] || '').trim(),
       precio: (fila[PRECIO] || '').trim(),
-      foto: fotoDeDrive(fila[FOTO]),
+      fotoId: idDeDrive(fila[FOTO]),
       vendido: esVendido(fila[VENDIDO]),
     }))
     .reverse()

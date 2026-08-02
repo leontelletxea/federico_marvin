@@ -215,17 +215,50 @@ es prueba de que el taller produce y vende. Si se quiere ocultar en vez de
 mostrar, es filtrar por `vendido` en
 [InstrumentosVenta.jsx](src/components/InstrumentosVenta.jsx).
 
-**Las fotos son el punto frágil.** El form sube la imagen a Drive y en la celda
-deja un link *de página* (`drive.google.com/open?id=…`), que no sirve como `src`
-de un `<img>`. El hook extrae el ID y arma
-`https://drive.google.com/thumbnail?id=<ID>&sz=w1200`, que sí devuelve la imagen.
-Eso **exige que el archivo esté compartido como "cualquiera con el enlace"**; los
-archivos que sube un form no siempre lo están. Si una foto no aparece, revisar
-los permisos de la carpeta de respuestas en Drive antes de tocar código. Las
-filas sin foto muestran un placeholder en vez de romper la grilla.
+Cada tarjeta cierra con "Consultar", que abre WhatsApp con el nombre del
+instrumento ya escrito en el mensaje.
 
-La hoja no tiene columna de precio: cada tarjeta cierra con "Consultar", que abre
-WhatsApp con el nombre del instrumento ya escrito en el mensaje.
+### Las fotos: el punto frágil
+
+El form sube la imagen a Drive y en la celda deja un link *de página*
+(`drive.google.com/open?id=…`), que no sirve como `src` de un `<img>`. El hook
+extrae solo el **ID**; la URL la arma
+[InstrumentosVenta.jsx](src/components/InstrumentosVenta.jsx), que es quien sabe
+a qué tamaño se dibuja la foto y puede reintentar. Todo esto **exige que el
+archivo esté compartido como "cualquiera con el enlace"**, y los que sube un form
+no siempre lo están.
+
+Las fotos fallaban de forma intermitente por tres causas, las tres resueltas:
+
+**1. `referrerPolicy="no-referrer"` en el `<img>`, y no es opcional.** Drive tiene
+protección anti-hotlinking: si el pedido llega con cabecera `Referer` responde
+**429**; sin `Referer` devuelve la imagen. Comprobado y reproducible:
+
+```
+curl sin referer  → 200 image/jpeg
+curl con referer  → 429 text/html
+```
+
+Por eso la foto se ve al abrir su link directo pero falla dentro de la página.
+Si las fotos dejan de cargar, **antes de mirar permisos verificar que ese
+atributo siga puesto**: es la causa más probable. Los permisos son la segunda
+sospecha, no la primera.
+
+**2. Reintento contra el otro host.** Drive corta pedidos por momentos aunque el
+`Referer` esté bien. El componente `FotoInstrumento` maneja el `onError`: si
+`drive.google.com/thumbnail` falla, reintenta con
+`lh3.googleusercontent.com/d/<ID>`, que sirve el mismo archivo. Recién si también
+falla cae al placeholder "Sin foto" (que es también lo que se muestra si la fila
+no trae foto). Antes, un solo 429 dejaba la imagen rota hasta recargar la página.
+
+**3. Tamaño.** Se pide `sz=w600`, no `w1200`: las tarjetas se dibujan a ~300px y
+600 ya cubre pantallas retina. Medido sobre una foto real, **212 kB → 85 kB** por
+imagen. Si algún día las tarjetas se agrandan, se sube `ANCHO_FOTO`.
+
+El hueco de la foto lleva `aspect-ratio:4/5` y la imagen va absoluta adentro: la
+altura la manda el contenedor y no la imagen, así todas las tarjetas miden lo
+mismo y la grilla no salta a medida que van cargando. La imagen entra con un
+fundido corto (clase `.cargada`, que agrega el `onLoad`).
 
 ## Ubicaciones
 
@@ -246,6 +279,13 @@ El mapa es un `<iframe>` de Google **sin API key**: se arma la URL como
 alimenta el link "Cómo llegar", que usa el formato oficial
 `maps/search/?api=1&query=`. Para cambiar una dirección alcanza con editar el
 array: mapa y link se recalculan solos.
+
+**Los dos iframes se cargan solos, con `loading="lazy"`.** Se probó una previa
+con botón "Ver mapa" para no pedirle nada a Google hasta el clic (un embed de
+Maps es una aplicación entera: JS, tiles y varios pedidos), pero **se descartó a
+propósito**: obligar a un clic para ver dónde queda el taller molesta más de lo
+que ahorra. Los mapas se ven de entrada aunque tarden. No reintroducir esa previa
+sin pedirlo.
 
 El embed viene con el mapa en claro, así que se lo invierte por CSS
 (`invert(.92) hue-rotate(180deg)` + desaturación) para que entre en la paleta

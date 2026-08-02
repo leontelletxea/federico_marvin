@@ -281,16 +281,32 @@ a{color:inherit;text-decoration:none}
   display:flex;
   flex-direction:column;
 }
-.instrumento-media{position:relative}
-.instrumento-foto{
-  width:100%;
+/* El hueco de la foto reserva su lugar desde el principio (aspect-ratio) y
+   muestra un fondo tenue mientras la imagen viaja: la grilla no salta cuando
+   cada foto termina de cargar. */
+.instrumento-media{
+  position:relative;
   aspect-ratio:4/5;
+  border-radius:var(--radio);
+  background:linear-gradient(160deg,rgba(236,230,218,.07),rgba(236,230,218,.02));
+}
+/* absoluta contra el hueco: la altura la manda el aspect-ratio del contenedor y
+   no la imagen, así todas las tarjetas miden exactamente lo mismo */
+.instrumento-foto{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
   object-fit:cover;
   border:1px solid var(--borde);
   border-radius:var(--radio);
   filter:brightness(.94);
   transition:filter .35s ease, border-color .35s ease;
 }
+/* Las fotos de Drive entran con un fundido corto en vez de aparecer de golpe.
+   La clase la pone el onLoad del componente. */
+img.instrumento-foto{opacity:0;transition:opacity .45s ease, filter .35s ease, border-color .35s ease}
+img.instrumento-foto.cargada{opacity:1}
 .instrumento:not(.instrumento--vendido):hover .instrumento-foto{
   filter:brightness(1.02);
   border-color:rgba(209,154,82,.5);
@@ -607,4 +623,9 @@ footer .credito{font-size:.6rem;letter-spacing:.25em}
 }
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition:none!important}
+}
+/* Red seguridad del fundido de las fotos: si por lo que sea el onLoad no llega
+   a correr, la imagen se muestra igual en vez de quedar invisible para siempre. */
+@media (scripting:none){
+  img.instrumento-foto{opacity:1}
 }

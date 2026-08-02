@@ -1,0 +1,247 @@
+# CLAUDE.md
+
+Contexto del proyecto para Claude Code (y para cualquiera que retome el código).
+
+## Qué es
+
+Landing page de una sola página (one-pager) para **Federico Marvin**, que ejerce
+dos oficios: **luthier** (construcción, reparación y calibración de guitarras y
+bajos) y **tatuador** (más de 12 años de experiencia). El sitio es una vidriera
+comercial: mostrar trabajos, publicar la lista de precios y derivar la consulta a
+WhatsApp. No hay carrito, ni reservas, ni backend propio.
+
+Idioma del sitio y del código: **español rioplatense** (voseo: "Hacé tu
+consulta", "Comunicate por WhatsApp"). Los nombres de componentes, clases CSS,
+variables y comentarios están en español — mantener esa convención al agregar
+código.
+
+## La idea de diseño (lo importante)
+
+El concepto central es la **identidad dual**: "dos oficios, las mismas manos".
+Cada oficio tiene su propia voz tipográfica y su propio color, y el sitio los
+presenta como iguales en jerarquía:
+
+| | Luthier | Tattoo |
+|---|---|---|
+| Tipografía | `Fraunces` (serif; madera, taller, artesanía) | `Bebas Neue` (cartel de estudio, flash art) |
+| Color de acento | `--ambar` `#d19a52` (barniz / madera) | `--tinta` `#b8453e` (rojo tradicional de flash) |
+| Alineación en el hero | izquierda | derecha |
+| Fondo de sección | `--carbon` `#17151a` | `--negro` `#0d0c0f` |
+
+`Inter` es la tipografía de apoyo para texto corrido. Las tres se cargan desde
+Google Fonts en [index.html](index.html) (con `preconnect`).
+
+Paleta completa (variables CSS en `:root`, en
+[src/styles/estilos.css](src/styles/estilos.css)):
+
+- `--negro #0d0c0f` — fondo base
+- `--carbon #17151a` — fondo de la sección luthier
+- `--hueso #ece6da` — texto principal
+- `--hueso-suave rgba(236,230,218,.78)` — texto secundario
+- `--ambar #d19a52` / `--ambar-oscuro #8a5a24` — acento luthier
+- `--tinta #b8453e` / `--tinta-oscura #5e1f1c` — acento tattoo
+- `--borde rgba(236,230,218,.12)` — bordes hairline
+- `--transicion-panel .85s cubic-bezier(.65,0,.15,1)` — timing del hero
+
+Al tocar colores, respetar el pareo oficio↔color: mezclarlos rompe la lectura
+del sitio.
+
+## Stack
+
+React 19 + Vite 8, sin router ni librerías de UI. Todo el CSS es un único archivo
+global con clases planas (sin CSS Modules ni Tailwind).
+
+```
+npm install
+npm run dev       # servidor de desarrollo (http://localhost:5173)
+npm run build     # build de producción a dist/
+npm run preview   # sirve dist/ localmente
+```
+
+`vite.config.js` usa `base: './'` para que el sitio funcione publicado en un
+subdirectorio (GitHub Pages y similares).
+
+### Variables de entorno
+
+Los datos de contacto y el ID de la planilla viven en `.env` (plantilla en
+`.env.example`). Solo las variables con prefijo `VITE_` llegan al navegador.
+
+**El `.env` está versionado a propósito**: no contiene secretos —son el WhatsApp,
+el Instagram, el mail y el ID de una planilla pública, todos visibles en el sitio
+igual— y así el build funciona en cualquier host sin configurar nada. Si algún
+día entra un valor sensible (una API key, un token), **no va acá**: Vite reemplaza
+cada `import.meta.env.VITE_X` por su valor literal dentro del JS público, así que
+cualquiera puede leerlo. Ese caso necesita un backend o una función serverless.
+
+`config.js` lee cada variable de forma literal (`import.meta.env.VITE_X`) para que
+el reemplazo estático funcione; si se asigna `import.meta.env` a una variable
+intermedia, Vite inyecta el objeto entero y se pierde el tree-shaking. En `dev`
+avisa por consola si falta alguna variable; ese chequeo no llega a producción.
+
+## Estructura
+
+```
+index.html                      # shell de Vite: meta tags, fonts, <div id="root">
+vite.config.js
+.env                            # datos de contacto y SHEET_ID (versionado, sin secretos)
+.env.example                    # plantilla de las variables
+src/
+  main.jsx                      # createRoot + import del CSS global
+  App.jsx                       # orden de la página
+  styles/estilos.css            # TODO el CSS del sitio (archivo único)
+  data/config.js                # lee el .env y exporta los valores tipados
+  hooks/usePrecios.js           # fetch de precios desde Google Sheets
+  components/
+    Hero.jsx                    # header con los dos paneles expandibles
+    SeccionTattoo.jsx           # mosaico + lista de precios tattoo
+    SeccionLuthier.jsx          # mosaico + lista de precios luthier
+    ListaPrecios.jsx            # <ul> de servicios (compartido por ambas secciones)
+    Contacto.jsx                # avatar + links de contacto
+    PieDePagina.jsx             # footer
+    BotonWhatsapp.jsx           # botón flotante fijo
+  assets/img/                   # todas las fotos
+```
+
+Orden en pantalla (definido en [src/App.jsx](src/App.jsx)): hero → **tattoo** →
+**luthier** → contacto → footer. Notar que tattoo va primero en el scroll aunque
+en el hero el panel luthier esté a la izquierda; los paneles son anclas
+(`#luthier`, `#tattoo`) y el scroll es suave (`scroll-behavior:smooth`).
+
+## Hero: los paneles expandibles
+
+Es la pieza con más lógica del sitio. Dos `<a>` (`.panel--luthier` y
+`.panel--tattoo`) ocupan la altura completa de la ventana (`100dvh`) y comparten
+el ancho al 50/50.
+
+**Desktop (con hover): resuelto 100% en CSS**, sin JS.
+
+```css
+.paneles:has(.panel:hover) .panel{flex:.12}   /* el que no se hoverea se comprime */
+.paneles:has(.panel:hover) .panel:hover{flex:1}
+```
+
+Al expandirse, el panel: sube el brillo del fondo (`.78` → `.92`), quita el
+`scale(1.06)` de la imagen, separa el marco interior (`inset` `1.1rem` →
+`1.6rem`), lo tiñe con su color de acento, y revela `.panel-sub` y `.panel-cta`
+con fade+slide escalonado. El panel comprimido oculta su contenido
+(`opacity:0`).
+
+**Mobile / táctil (sin hover): lo maneja React.** `Hero.jsx` guarda en estado
+qué panel está `activo`. El **primer tap expande** el panel (con
+`e.preventDefault()`, no navega); el **segundo tap sobre el mismo panel navega**
+a su sección. La detección es `window.matchMedia('(hover: none)').matches`,
+evaluada en cada click. El estado agrega la clase `activo` al panel y
+`con-activo` al contenedor `.paneles`; las reglas correspondientes viven en el
+CSS (en el original se inyectaban con JS en runtime).
+
+En ≤820px los paneles se apilan en vertical y el panel comprimido usa `flex:.3`
+en lugar de `.12` para seguir siendo visible.
+
+## Precios: se editan desde una Google Sheet, no desde el código
+
+Las dos listas de precios **no están hardcodeadas**. Se leen en runtime desde una
+planilla de Google vía [opensheet](https://opensheet.elk.sh), que devuelve la
+hoja como JSON sin API key.
+
+- Endpoint: `https://opensheet.elk.sh/${SHEET_ID}/${SHEET_HOJA}` (la hoja por
+  índice; `1` es la primera).
+- Ambos salen del `.env` (`VITE_SHEET_ID`, `VITE_SHEET_HOJA`).
+- La planilla debe tener exactamente estas columnas (la primera fila son los
+  encabezados y se convierten en las claves del JSON):
+
+| tipo | nombre | precio |
+|---|---|---|
+| `tattoo` | Tatuaje chico en negro (hasta 9cm) | ARS 50.000 |
+| `luthier` | Calibración guitarra electrica | ARS 60.000 |
+
+`tipo` solo acepta `tattoo` o `luthier`; es lo que decide en qué sección aparece
+la fila. El `precio` se muestra tal cual viene (string), sin formateo: si querés
+cambiar la moneda o el formato, se cambia en la planilla.
+
+Para actualizar precios: editar la planilla y recargar el sitio. **No hace falta
+rebuild ni deploy.**
+
+Implementación en [src/hooks/usePrecios.js](src/hooks/usePrecios.js): el fetch se
+hace **una sola vez** y la promesa queda cacheada en memoria a nivel de módulo,
+así las dos secciones comparten el mismo pedido en lugar de disparar dos.
+
+**Si la planilla no responde, las listas quedan vacías.** El comentario del HTML
+original hablaba de "fallback al HTML hardcodeado", pero ese fallback nunca
+existió: los `<ul>` estaban vacíos y se llenaban solo por JS. Si se quiere un
+fallback real, hay que agregar un array de precios por defecto en
+`usePrecios.js`. El error de red se traga en silencio a propósito: se prefiere
+una sección sin lista antes que un mensaje de error en la cara del cliente.
+
+## Imágenes
+
+Están en [src/assets/img/](src/assets/img/) y se importan desde los componentes
+(Vite las procesa y les pone hash). Las dos del hero son excepción: se usan como
+`background-image` desde el CSS.
+
+| Archivo | Uso |
+|---|---|
+| `img-luthier.jpg` | fondo del panel luthier (CSS) |
+| `img-tattoo.jpg` | fondo del panel tattoo (CSS), `background-position:center 65%` |
+| `tattoo-01.jpg` | mosaico tattoo, foto principal (columna alta) |
+| `tattoo-02.jpg` | mosaico tattoo, `.mosaico-navaja` con `object-position:50% 32%` |
+| `tattoo-03.jpg` | mosaico tattoo |
+| `taller-01.jpg` | mosaico luthier, foto principal |
+| `taller-02.jpg` | mosaico luthier |
+| `taller-03.jpg` | mosaico luthier, `.mosaico-tocando` con `object-position:50% 12%` |
+| `img-federico.jpg` | avatar circular de la sección contacto |
+| `taller-02x.jpg` | **sin usar** (ya estaba sin usar en el HTML original) |
+
+Varias fotos llevan `object-position` a medida porque el encuadre importa (que no
+se corte la cara, la navaja, etc.). Si se reemplaza una foto, revisar ese valor.
+
+Las imágenes son pesadas (el hero suma ~800 kB). No están optimizadas ni hay
+`loading="lazy"`: es una mejora pendiente evidente si aparece un problema de
+performance.
+
+### El mosaico
+
+Grid de 2 columnas (`1.5fr 1fr`) × 2 filas. La primera foto (`.mosaico-principal`)
+ocupa las dos filas de la columna ancha (`min-height:520px`); las otras dos van
+apiladas a la derecha en 4:3. En ≤820px se convierte en una sola columna y la
+principal pasa a 4:5.
+
+## Contacto
+
+Los links salen del `.env` a través de
+[src/data/config.js](src/data/config.js). **Hay placeholders sin reemplazar**:
+
+- `VITE_WHATSAPP` — `wa.me/5493416248302` (Rosario, +54 9 341) — parece el número real.
+- `VITE_INSTAGRAM` — `instagram.com/usuario` — **placeholder, falta el usuario real**.
+- `VITE_EMAIL` — `contacto@ejemplo.com` — **placeholder, falta el mail real**.
+- El link "leontelletxea" del footer apunta a `#` — **falta la URL**. Este está
+  hardcodeado en [PieDePagina.jsx](src/components/PieDePagina.jsx), no en el `.env`.
+
+El botón flotante de WhatsApp (`.wsp`, abajo a la derecha, `z-index:100`) usa el
+mismo `WHATSAPP` y tiene una animación de pulso (`@keyframes pulso`) en un
+pseudo-elemento.
+
+## Accesibilidad y detalles a respetar
+
+- Los paneles del hero tienen `aria-label`; el `<svg>` del botón de WhatsApp es
+  `aria-hidden` y el `<a>` lleva su propio `aria-label`.
+- Todas las `<img>` tienen `alt` descriptivo en español. Mantenerlo al agregar
+  fotos.
+- Hay un bloque `@media (prefers-reduced-motion:reduce)` que **desactiva todas
+  las animaciones y transiciones** del sitio. Si agregás animación, verificá que
+  quede cubierta por esa regla (usa `*` con `!important`, así que en general sí).
+- Los textos sobre foto llevan `text-shadow` fuerte para legibilidad. No quitarlo.
+- El único breakpoint es **820px**. No hay más: no inventar breakpoints
+  intermedios sin necesidad.
+
+## Historia del proyecto
+
+Nació como un `index.html` monolítico (~620 líneas: CSS en `<style>`, markup y
+dos `<script>` inline) con las imágenes sueltas en la raíz. Se migró a React +
+Vite conservando el markup, el CSS y el comportamiento tal cual. Dos diferencias
+deliberadas respecto del original:
+
+1. El CSS que el script inyectaba en runtime para el modo táctil ahora vive en el
+   archivo de estilos.
+2. En táctil, `.panel-sub` y `.panel-cta` del panel activo ahora se muestran
+   también por encima de 820px (tablets). En el original quedaban invisibles ahí,
+   porque solo el media query de mobile las revelaba.

@@ -1,0 +1,7 @@
+node_modules
+dist
+.DS_Store
+
+# .env sí se versiona: no tiene secretos (son datos públicos del sitio) y así el
+# build funciona en cualquier host sin configurar nada. Los overrides locales no.
+*.local

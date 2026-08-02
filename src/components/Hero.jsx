@@ -35,9 +35,9 @@ export default function Hero() {
           <div className="panel-fondo"></div>
           <div className="panel-borde"></div>
           <div className="panel-contenido">
-            <div className="panel-etiqueta">Guitarras &amp; Bajos</div>
+            <div className="panel-etiqueta">Reparación &amp; Custom</div>
             <div className="panel-titulo">Luthier</div>
-            <p className="panel-sub">Construcción, reparación y calibración. Cada instrumento tratado como una pieza única.</p>
+            <p className="panel-sub">Construcción desde cero, reparación y calibración. Eléctricas, acústicas y bajos.</p>
             <span className="panel-cta">Ver el taller</span>
           </div>
         </a>
@@ -52,9 +52,9 @@ export default function Hero() {
           <div className="panel-fondo"></div>
           <div className="panel-borde"></div>
           <div className="panel-contenido">
-            <div className="panel-etiqueta">Estudio &amp; Diseño</div>
+            <div className="panel-etiqueta">Casa Jaguar Tattoo</div>
             <div className="panel-titulo">Tattoo Artist</div>
-            <p className="panel-sub">Diseños propios. estilos Blackwork, tradicional y ornamental.</p>
+            <p className="panel-sub">Blackwork, tradicional y ornamental. Diseños propios, en negro o a color.</p>
             <span className="panel-cta">Ver trabajos</span>
           </div>
         </a>

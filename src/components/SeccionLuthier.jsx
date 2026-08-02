@@ -9,7 +9,7 @@ export default function SeccionLuthier() {
       <div className="contenedor">
         <div className="eyebrow">El taller</div>
         <div className="luthier-cabecera">
-          <h2 className="titulo-serif">Guitarras y bajos<br />que <em>vuelven a sonar</em>.</h2>
+          <h2 className="titulo-serif">Instrumentos custom <br />hechos a <em>mano</em>.</h2>
           <div className="luthier-estilos">Eléctricas · Acústicas · Bajos</div>
         </div>
 

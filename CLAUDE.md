@@ -41,6 +41,7 @@ Paleta completa (variables CSS en `:root`, en
 - `--ambar #d19a52` — acento luthier
 - `--tinta #b8453e` — acento tattoo
 - `--borde rgba(236,230,218,.12)` — bordes hairline
+- `--radio 10px` — esquinas de las fotos del mosaico y de los mapas
 - `--transicion-panel 1.25s cubic-bezier(.65,0,.15,1)` — timing del hero
 
 Al tocar colores, respetar el pareo oficio↔color: mezclarlos rompe la lectura
@@ -96,14 +97,14 @@ src/
     SeccionTattoo.jsx           # mosaico + lista de precios tattoo
     SeccionLuthier.jsx          # mosaico + lista de precios luthier
     ListaPrecios.jsx            # <ul> de servicios (compartido por ambas secciones)
-    Contacto.jsx                # avatar + links de contacto
-    PieDePagina.jsx             # footer
+    Ubicaciones.jsx             # firma (foto + nombre) + mapas del estudio y del taller
+    Footer.jsx                  # footer + crédito del autor
     BotonWhatsapp.jsx           # botón flotante fijo
   assets/img/                   # todas las fotos
 ```
 
 Orden en pantalla (definido en [src/App.jsx](src/App.jsx)): hero → **tattoo** →
-**luthier** → contacto → footer. Notar que tattoo va primero en el scroll aunque
+**luthier** → ubicaciones → footer. Notar que tattoo va primero en el scroll aunque
 en el hero el panel luthier esté a la izquierda; los paneles son anclas
 (`#luthier`, `#tattoo`) y el scroll es suave (`scroll-behavior:smooth`).
 
@@ -172,6 +173,32 @@ fallback real, hay que agregar un array de precios por defecto en
 `usePrecios.js`. El error de red se traga en silencio a propósito: se prefiere
 una sección sin lista antes que un mensaje de error en la cara del cliente.
 
+## Ubicaciones
+
+Encabeza la sección la **firma** (`.firma`): la foto circular de Federico con el
+nombre y el rol al lado. Es el único elemento del sitio donde los dos acentos se
+tocan — el aro de la foto es un degradado `--ambar` → `--tinta` — y por eso hace
+de nexo entre los dos espacios. Antes vivía en contacto; se unificó acá para no
+repetir dos bloques de presentación seguidos. El nombre es el `<h2>` de la
+sección (reusa `.titulo-serif` con el tamaño bajado).
+
+Debajo, dos tarjetas, una por oficio. Las
+direcciones viven en el array `UBICACIONES` de
+[src/data/config.js](src/data/config.js) (`calle` + `ciudad`); el orden del array
+es el orden en pantalla.
+
+El mapa es un `<iframe>` de Google **sin API key**: se arma la URL como
+`https://www.google.com/maps?q=<dirección>&z=16&output=embed`. La misma dirección
+alimenta el link "Cómo llegar", que usa el formato oficial
+`maps/search/?api=1&query=`. Para cambiar una dirección alcanza con editar el
+array: mapa y link se recalculan solos.
+
+El embed viene con el mapa en claro, así que se lo invierte por CSS
+(`invert(.92) hue-rotate(180deg)` + desaturación) para que entre en la paleta
+oscura. Es la única parte del sitio que depende de ese truco: si el resultado se
+ve mal en algún navegador, se ajusta en `.ubicacion-mapa iframe`. Los dos iframes
+llevan `loading="lazy"` — están al pie de la página y son pedidos a terceros.
+
 ## Imágenes
 
 Están en [src/assets/img/](src/assets/img/) y se importan desde los componentes
@@ -188,7 +215,7 @@ Están en [src/assets/img/](src/assets/img/) y se importan desde los componentes
 | `taller-01.jpg` | mosaico luthier, foto principal |
 | `taller-02.jpg` | mosaico luthier |
 | `taller-03.jpg` | mosaico luthier, `.mosaico-tocando` con `object-position:50% 12%` |
-| `img-federico.jpg` | avatar circular de la sección contacto |
+| `img-federico.jpg` | foto circular de la firma, en la sección ubicaciones |
 | `taller-02x.jpg` | **sin usar** (ya estaba sin usar en el HTML original) |
 
 Varias fotos llevan `object-position` a medida porque el encuadre importa (que no
@@ -207,18 +234,21 @@ principal pasa a 4:5.
 
 ## Contacto
 
-Los links salen del `.env` a través de
-[src/data/config.js](src/data/config.js). **Hay placeholders sin reemplazar**:
+**No hay sección de contacto**: se borró junto con sus links a Instagram y mail.
+El único canal es el **botón flotante de WhatsApp** (`.wsp`, abajo a la derecha,
+`z-index:100`), que usa `WHATSAPP` de
+[src/data/config.js](src/data/config.js) y tiene una animación de pulso
+(`@keyframes pulso`) en un pseudo-elemento. El texto de la sección ubicaciones
+("Escribime por WhatsApp y coordinamos día y hora") apunta a ese botón.
 
-- `VITE_WHATSAPP` — `wa.me/5493416248302` (Rosario, +54 9 341) — parece el número real.
-- `VITE_INSTAGRAM` — `instagram.com/usuario` — **placeholder, falta el usuario real**.
-- `VITE_EMAIL` — `contacto@ejemplo.com` — **placeholder, falta el mail real**.
-- El link "leontelletxea" del footer apunta a `#` — **falta la URL**. Este está
-  hardcodeado en [PieDePagina.jsx](src/components/PieDePagina.jsx), no en el `.env`.
+Pendientes conocidos:
 
-El botón flotante de WhatsApp (`.wsp`, abajo a la derecha, `z-index:100`) usa el
-mismo `WHATSAPP` y tiene una animación de pulso (`@keyframes pulso`) en un
-pseudo-elemento.
+- `WHATSAPP` — `wa.me/5493416248302` (Rosario, +54 9 341) — parece el número real,
+  conviene confirmarlo.
+- El link "leontelletxea" del footer apunta al LinkedIn del autor y está
+  hardcodeado en [Footer.jsx](src/components/Footer.jsx) (constante
+  `LINKEDIN_AUTOR`), no en `config.js`: es el crédito del desarrollador, no un
+  dato de contacto del cliente.
 
 ## Accesibilidad y detalles a respetar
 

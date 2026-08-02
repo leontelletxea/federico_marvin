@@ -12,6 +12,7 @@
   --ambar:#d19a52;        /* barniz / madera */
   --tinta:#b8453e;        /* rojo tradicional de flash */
   --borde:rgba(236,230,218,.12);
+  --radio:10px;           /* esquinas de fotos y mapas */
   --transicion-panel:1.25s cubic-bezier(.65,0,.15,1);
 }
 *{margin:0;padding:0;box-sizing:border-box}
@@ -298,6 +299,7 @@ a{color:inherit;text-decoration:none}
   width:100%;height:100%;
   object-fit:cover;
   border:1px solid var(--borde);
+  border-radius:var(--radio);
   transition:filter .35s ease, border-color .35s ease;
   filter:brightness(.94);
 }
@@ -332,16 +334,24 @@ a{color:inherit;text-decoration:none}
 }
 .sec-tattoo .lista-servicios li:hover .nombre{color:var(--tinta)}
 
-/* Avatar Federico */
-.avatar{
+/* ---------- UBICACIONES ---------- */
+/* Sección dual: el eyebrow y el título quedan neutros, y cada tarjeta habla en
+   la tipografía y el color de su oficio. */
+.ubicaciones{background:var(--negro);border-top:1px solid var(--borde)}
+.ubicaciones .texto-suave{margin-bottom:3.2rem}
+/* Firma: foto + nombre. El aro de la foto degrada de ámbar a tinta — es el
+   único lugar donde los dos acentos se tocan. */
+.firma{
   display:flex;
-  flex-direction:column;
   align-items:center;
-  gap:1rem;
-  margin-bottom:2.4rem;
+  gap:clamp(1.1rem,2.5vw,1.8rem);
+  flex-wrap:wrap;
+  margin-bottom:1.1rem;
 }
-.avatar img{
-  width:132px;height:132px;
+.firma-foto{
+  width:clamp(96px,14vw,132px);
+  aspect-ratio:1;
+  flex-shrink:0;
   border-radius:50%;
   object-fit:cover;
   object-position:center 30%;
@@ -352,46 +362,85 @@ a{color:inherit;text-decoration:none}
   border:2px solid transparent;
   box-shadow:0 10px 40px rgba(0,0,0,.5);
 }
-.avatar-nombre{
-  font-family:'Fraunces',serif;
-  font-size:1.25rem;
-  letter-spacing:.08em;
+.firma-nombre{
+  font-size:clamp(1.7rem,3.4vw,2.6rem);
+  margin-bottom:.4rem;
 }
-.avatar-rol{
+.firma-rol{
   font-size:.65rem;
   letter-spacing:.35em;
   text-transform:uppercase;
   color:var(--hueso-suave);
 }
-
-/* Contacto */
-.contacto{
-  background:var(--negro);
-  border-top:1px solid var(--borde);
-  text-align:center;
+.ubicaciones-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:clamp(1.8rem,3.5vw,3rem);
 }
-.contacto .titulo-serif{margin-bottom:.8rem}
-.contacto .texto-suave{margin:0 auto}
-.contacto-links{
-  display:flex;
-  justify-content:center;
-  gap:2.5rem;
-  margin-top:2.2rem;
-  flex-wrap:wrap;
-  font-size:.75rem;
-  letter-spacing:.28em;
+.ubicacion-mapa{
+  aspect-ratio:4/3;
+  border:1px solid var(--borde);
+  border-radius:var(--radio);
+  overflow:hidden;
+  /* Safari ignora overflow:hidden sobre un iframe; la máscara lo obliga a
+     respetar el radio. Sin esto las esquinas del mapa quedan cuadradas en iOS. */
+  -webkit-mask-image:-webkit-radial-gradient(white,black);
+  transition:border-color .35s ease;
+}
+.ubicacion-mapa iframe{
+  width:100%;height:100%;
+  border:0;
+  display:block;
+  /* el embed de Google viene en claro: se invierte para entrar en la paleta */
+  filter:invert(.92) hue-rotate(180deg) saturate(.5) brightness(.9) contrast(1.05);
+  transition:filter .35s ease;
+}
+.ubicacion:hover .ubicacion-mapa iframe{
+  filter:invert(.92) hue-rotate(180deg) saturate(.68) brightness(1) contrast(1.05);
+}
+.ubicacion--tattoo:hover .ubicacion-mapa{border-color:rgba(184,69,62,.55)}
+.ubicacion--luthier:hover .ubicacion-mapa{border-color:rgba(209,154,82,.5)}
+.ubicacion-etiqueta{
+  font-size:.68rem;
+  letter-spacing:.4em;
   text-transform:uppercase;
+  margin:1.5rem 0 .8rem;
 }
-.contacto-links a{
+.ubicacion--tattoo .ubicacion-etiqueta{color:var(--tinta)}
+.ubicacion--luthier .ubicacion-etiqueta{color:var(--ambar)}
+.ubicacion--luthier .ubicacion-direccion{
+  font-family:'Fraunces',serif;
+  font-weight:350;
+  font-size:1.75rem;
+  line-height:1.1;
+}
+.ubicacion--tattoo .ubicacion-direccion{
+  font-family:'Bebas Neue',sans-serif;
+  font-weight:400;
+  font-size:2rem;
+  letter-spacing:.06em;
+  line-height:1;
+}
+.ubicacion-ciudad{
   color:var(--hueso-suave);
-  padding-bottom:.35rem;
-  border-bottom:1px solid transparent;
-  transition:color .3s ease,border-color .3s ease;
+  font-size:.92rem;
+  margin-top:.35rem;
 }
-.contacto-links a:hover{
-  color:var(--hueso);
-  border-image:linear-gradient(90deg,var(--ambar),var(--tinta)) 1;
+.ubicacion-cta{
+  margin-top:1.3rem;
+  display:inline-flex;
+  align-items:center;
+  gap:.6rem;
+  font-size:.72rem;
+  letter-spacing:.3em;
+  text-transform:uppercase;
+  transition:gap .35s ease;
 }
+.ubicacion-cta::after{content:"";width:2.4rem;height:1px;background:currentColor}
+.ubicacion-cta:hover{gap:1.1rem}
+.ubicacion--tattoo .ubicacion-cta{color:var(--tinta)}
+.ubicacion--luthier .ubicacion-cta{color:var(--ambar)}
+
 footer{
   padding:1.6rem;
   text-align:center;
@@ -406,11 +455,19 @@ footer{
   gap:.5rem;
 }
 footer .credito{font-size:.6rem;letter-spacing:.25em}
-footer .credito a{
-  color:rgba(236,230,218,.7);
-  transition:color .3s ease;
+/* El crédito del autor es el único link del footer: va en ámbar y subrayado
+   para que se distinga del texto muerto que lo rodea. */
+.credito-link{
+  color:var(--ambar);
+  border-bottom:1px solid rgba(209,154,82,.45);
+  padding-bottom:.15rem;
+  transition:color .3s ease, border-color .3s ease;
 }
-footer .credito a:hover{color:var(--ambar)}
+.credito-link:hover,
+.credito-link:focus-visible{
+  color:var(--hueso);
+  border-color:var(--hueso);
+}
 
 /* ---------- BOTÓN WHATSAPP ---------- */
 .wsp{
@@ -450,6 +507,7 @@ footer .credito a:hover{color:var(--ambar)}
   .panel-sub,.panel-cta{opacity:1;transform:none}
   .mosaico{grid-template-columns:1fr;grid-template-rows:none}
   .mosaico-principal{grid-row:auto;min-height:0;aspect-ratio:4/5}
+  .ubicaciones-grid{grid-template-columns:1fr}
   .hero-nombre{padding-top:1.4rem}
 }
 @media (prefers-reduced-motion:reduce){

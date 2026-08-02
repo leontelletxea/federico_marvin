@@ -19,7 +19,7 @@ export default function SeccionTattoo() {
           <img className="mosaico-item mosaico-navaja" src={tattoo02} alt="Blackwork navaja mariposa" />
         </div>
 
-        <div className="eyebrow">Lista de precios · Blanco y negro</div>
+        <div className="eyebrow">Lista de precios</div>
         <ListaPrecios tipo="tattoo" />
       </div>
     </section>

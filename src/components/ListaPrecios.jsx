@@ -8,9 +8,9 @@ export default function ListaPrecios({ tipo }) {
   return (
     <ul className="lista-servicios">
       {items.map(item => (
-        <li key={`${item.nombre}-${item.precio}`}>
-          <span className="nombre">{item.nombre}</span>
-          <span className="precio">{item.precio}</span>
+        <li key={`${item.Nombre}-${item.Precio}`}>
+          <span className="nombre">{item.Nombre}</span>
+          <span className="precio">{item.Precio}</span>
         </li>
       ))}
     </ul>

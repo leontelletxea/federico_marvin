@@ -8,5 +8,5 @@ import { usePlanilla } from './usePlanilla'
  * @returns {Array<{nombre:string, precio:string, tipo:string}>}
  */
 export function usePrecios(tipo) {
-  return usePlanilla(SHEET_URL).filter(fila => fila.tipo === tipo)
+  return usePlanilla(SHEET_URL).filter(fila => fila.Tipo === tipo)
 }

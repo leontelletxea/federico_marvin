@@ -5,6 +5,7 @@ import { usePlanilla } from './usePlanilla'
 // reescribe una pregunta del formulario, cambia la clave y hay que tocarla acá.
 const NOMBRE = 'Nombre del producto'
 const DESCRIPCION = 'Descripción'
+const PRECIO = 'Precio'
 const FOTO = 'Foto'
 // Columna agregada a mano en la planilla (no la genera el form): una casilla de
 // verificación. Si la columna todavía no existe, todo cuenta como disponible.
@@ -32,7 +33,9 @@ function fotoDeDrive(valor) {
  * con los vendidos al final de todo.
  * Descarta las filas sin nombre: una respuesta incompleta no rompe la grilla,
  * y de paso filtra las filas que quedan "ocupadas" por una casilla sin tildar.
- * @returns {Array<{nombre:string, descripcion:string, foto:string|null, vendido:boolean}>}
+ * El precio se muestra tal cual lo escribió el cliente en el form, sin formatear,
+ * igual que en la lista de precios.
+ * @returns {Array<{nombre:string, descripcion:string, precio:string, foto:string|null, vendido:boolean}>}
  */
 export function useInstrumentos() {
   return usePlanilla(SHEET_URL_INSTRUMENTOS)
@@ -40,6 +43,7 @@ export function useInstrumentos() {
     .map(fila => ({
       nombre: fila[NOMBRE].trim(),
       descripcion: (fila[DESCRIPCION] || '').trim(),
+      precio: (fila[PRECIO] || '').trim(),
       foto: fotoDeDrive(fila[FOTO]),
       vendido: esVendido(fila[VENDIDO]),
     }))

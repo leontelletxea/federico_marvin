@@ -188,9 +188,14 @@ planilla. Columnas (las nombró el form, con acentos y espacios — si se reescr
 una pregunta cambia la clave y hay que tocarla en
 [useInstrumentos.js](src/hooks/useInstrumentos.js)):
 
-| Marca temporal | Nombre del producto | Descripción | Foto | Vendido |
-|---|---|---|---|---|
-| 2/8/2026 2:34:17 | Ejemplo guitarra | Ejemplo de descripción | `https://drive.google.com/open?id=…` | `TRUE` |
+| Marca temporal | Nombre del producto | Descripción | Precio | Foto | Vendido |
+|---|---|---|---|---|---|
+| 2/8/2026 3:18:03 | Ejemplo guitarra | Ejemplo de descripción | ARS 250.000 | `https://drive.google.com/open?id=…` | `TRUE` |
+
+El orden de las columnas **no importa**: se leen por nombre. Cuando se agregó la
+pregunta del precio, Google la insertó antes de `Foto` y corrió `Vendido` a la
+derecha, sin que hubiera que tocar nada. El `Precio` se muestra tal cual se
+escribe en el form, sin formatear, igual que en la lista de precios.
 
 **`Vendido` no la genera el form**: es una columna agregada a mano, con casillas
 de verificación aplicadas al rango `E2:E100` (no a la columna entera: una casilla

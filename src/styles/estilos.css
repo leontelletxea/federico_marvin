@@ -299,7 +299,8 @@ a{color:inherit;text-decoration:none}
    —lo disponible tiene color, lo vendido no— sin depender de leer el sello. */
 .instrumento--vendido .instrumento-foto{filter:grayscale(1) brightness(.45)}
 .instrumento--vendido .instrumento-nombre,
-.instrumento--vendido .instrumento-desc{color:var(--hueso-suave);opacity:.6}
+.instrumento--vendido .instrumento-desc,
+.instrumento--vendido .instrumento-precio{color:var(--hueso-suave);opacity:.6}
 .instrumento-sello{
   position:absolute;
   top:.7rem;left:.7rem;
@@ -329,6 +330,16 @@ a{color:inherit;text-decoration:none}
   font-size:1.15rem;
   line-height:1.25;
   margin-top:1rem;
+}
+/* Mismo tratamiento que los precios de la lista de arriba: Fraunces en ámbar.
+   Las dos formas de mostrar un precio en la sección luthier se leen igual. */
+.instrumento-precio{
+  font-family:'Fraunces',serif;
+  font-weight:400;
+  font-size:1.05rem;
+  color:var(--ambar);
+  margin-top:.3rem;
+  font-variant-numeric:tabular-nums;
 }
 .instrumento-desc{
   color:var(--hueso-suave);

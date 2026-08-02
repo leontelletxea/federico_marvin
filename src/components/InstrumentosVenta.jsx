@@ -37,6 +37,7 @@ export default function InstrumentosVenta() {
               {inst.vendido && <span className="instrumento-sello">Vendido</span>}
             </div>
             <h3 className="instrumento-nombre">{inst.nombre}</h3>
+            {inst.precio && <div className="instrumento-precio">{inst.precio}</div>}
             {inst.descripcion && <p className="instrumento-desc">{inst.descripcion}</p>}
             {/* lo vendido no ofrece consulta: no hay nada que consultar */}
             {!inst.vendido && (

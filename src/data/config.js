@@ -4,20 +4,29 @@
 // quitaron junto con la sección de contacto.
 export const WHATSAPP = 'https://wa.me/5493416248302'
 
-// Ubicaciones. La dirección se usa tal cual para el mapa embebido y para el
-// link "Cómo llegar"; el orden del array es el orden en pantalla.
+// Ubicaciones. `mapaUrl` es el link a la ficha del negocio en Google Maps (con
+// su pin exacto) y lo usa el botón "Cómo llegar". `cid` es el ID interno que
+// Google le asigna a esa misma ficha (se obtiene del link largo al que
+// redirige `mapaUrl`, en el segmento `!4c...:0x<cid en hex>`) y arma el mapa
+// embebido — con la dirección sola, el embed muestra un pin genérico de la
+// calle en vez de la ficha "Federico Marvin Luthier/Tattoo". El orden del
+// array es el orden en pantalla.
 export const UBICACIONES = [
   {
     tipo: 'luthier',
     etiqueta: 'Taller de luthería',
     calle: 'Mendoza 1765',
     ciudad: 'S2000BII Rosario, Santa Fe',
+    mapaUrl: 'https://maps.app.goo.gl/LPzBL5aJbRza1NuG6',
+    cid: '14855219056150540968',
   },
   {
     tipo: 'tattoo',
-    etiqueta: 'Estudio de tatuajes',
+    etiqueta: 'Tattoo Studio',
     calle: 'Zeballos 3667',
     ciudad: 'S2000 Rosario, Santa Fe',
+    mapaUrl: 'https://maps.app.goo.gl/6CrUiK5kn49b5Uts7',
+    cid: '14400708714676849228',
   },
 ]
 

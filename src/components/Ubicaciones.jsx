@@ -1,10 +1,11 @@
 import { UBICACIONES } from '../data/config'
 import federico from '../assets/img/img-federico.jpg'
 
-// Mapa embebido de Google sin API key: `output=embed` sobre una búsqueda por
-// dirección. El link aparte abre la app / el sitio de Maps para el recorrido.
-const srcMapa = consulta => `https://www.google.com/maps?q=${consulta}&z=16&output=embed`
-const linkMapa = consulta => `https://www.google.com/maps/search/?api=1&query=${consulta}`
+// Mapa embebido de Google sin API key: `output=embed` sobre el `cid` de la
+// ficha del negocio (no sobre la dirección como texto, que muestra un pin
+// genérico de la calle en vez del pin real "Federico Marvin Luthier/Tattoo").
+// El botón "Cómo llegar" usa `mapaUrl`, el link corto a esa misma ficha.
+const srcMapa = cid => `https://www.google.com/maps?cid=${cid}&z=16&output=embed`
 
 export default function Ubicaciones() {
   return (
@@ -26,12 +27,11 @@ export default function Ubicaciones() {
 
         <div className="ubicaciones-grid">
           {UBICACIONES.map(u => {
-            const consulta = encodeURIComponent(`${u.calle}, ${u.ciudad}`)
             return (
               <article key={u.tipo} className={`ubicacion ubicacion--${u.tipo}`}>
                 <div className="ubicacion-mapa">
                   <iframe
-                    src={srcMapa(consulta)}
+                    src={srcMapa(u.cid)}
                     title={`Mapa de ${u.etiqueta}: ${u.calle}`}
                     loading="lazy"
                     referrerPolicy="no-referrer-when-downgrade"
@@ -42,7 +42,7 @@ export default function Ubicaciones() {
                 <p className="ubicacion-ciudad">{u.ciudad}</p>
                 <a
                   className="ubicacion-cta"
-                  href={linkMapa(consulta)}
+                  href={u.mapaUrl}
                   target="_blank"
                   rel="noopener"
                 >

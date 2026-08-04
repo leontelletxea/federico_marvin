@@ -21,13 +21,13 @@ export default function SeccionTattoo() {
         <div className="mosaico">
           <img className="mosaico-item mosaico-principal" src={tattoo01} alt="Ornamental blackwork en antebrazo" />
           <img className="mosaico-item" src={tattoo03} alt="Gorila estilo tradicional" />
-          <img className="mosaico-item mosaico-navaja" src={tattoo02} alt="Blackwork navaja mariposa" />
+          <img className="mosaico-item mosaico-mono" src={tattoo02} alt="Blackwork navaja mariposa" />
         </div>
 
         <div className="mosaico-secundario">
-          <img className="mosaico-item mosaico-secundario-tercio" src={tattoo04} alt="Manga japonesa de máscara hannya en blanco y negro" />
+          <img className="mosaico-item mosaico-secundario-tercio mosaico-navaja" src={tattoo04} alt="Manga japonesa de máscara hannya en blanco y negro" />
           <img className="mosaico-item mosaico-secundario-tercio" src={tattoo05} alt="Máscaras oni con kanji en pantorrillas" />
-          <img className="mosaico-item mosaico-secundario-tercio" src={tattoo08} alt="Bombita de luz con cerebro, blackwork" />
+          <img className="mosaico-item mosaico-secundario-tercio mosaico-abeja" src={tattoo08} alt="Abeja blackwork" />
           <img className="mosaico-item mosaico-secundario-mitad" src={tattoo06} alt="Rosas tradicionales en antebrazo" />
           <img className="mosaico-item mosaico-secundario-mitad" src={tattoo07} alt="Tradicional americano de águila y serpiente" />
         </div>

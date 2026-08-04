@@ -423,7 +423,9 @@ img.instrumento-foto.cargada{opacity:1}
   min-height:520px;
 }
 .mosaico .mosaico-item:not(.mosaico-principal){min-height:0;aspect-ratio:4/3}
-.mosaico-navaja{object-position:50% 32%}
+.mosaico-mono{object-position:50% 45%}
+.mosaico-navaja{object-position:50% 33%}
+.mosaico-abeja{object-position:50% 42%}
 .mosaico-secundario{
   display:grid;
   grid-template-columns:repeat(6, 1fr);

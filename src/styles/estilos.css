@@ -424,6 +424,16 @@ img.instrumento-foto.cargada{opacity:1}
 }
 .mosaico .mosaico-item:not(.mosaico-principal){min-height:0;aspect-ratio:4/3}
 .mosaico-navaja{object-position:50% 32%}
+.mosaico-secundario{
+  display:grid;
+  grid-template-columns:repeat(6, 1fr);
+  gap:.9rem;
+  margin-bottom:2.8rem;
+}
+.mosaico-secundario .mosaico-item{aspect-ratio:4/3}
+.mosaico-secundario-tercio{grid-column:span 2}
+.mosaico-secundario-mitad{grid-column:span 3}
+.sec-tattoo .mosaico{margin-bottom:.9rem}
 .titulo-bebas{
   font-family:'Bebas Neue',sans-serif;
   font-size:clamp(2.6rem,5.5vw,4.6rem);
@@ -618,6 +628,7 @@ footer .credito{font-size:.6rem;letter-spacing:.25em}
   .panel-sub,.panel-cta{opacity:1;transform:none}
   .mosaico{grid-template-columns:1fr;grid-template-rows:none}
   .mosaico-principal{grid-row:auto;min-height:0;aspect-ratio:4/5}
+  .mosaico-secundario{grid-template-columns:1fr}
   .ubicaciones-grid{grid-template-columns:1fr}
   .hero-nombre{padding-top:1.4rem}
 }

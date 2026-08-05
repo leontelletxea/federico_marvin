@@ -563,6 +563,28 @@ img.instrumento-foto.cargada{opacity:1}
 .ubicacion-cta:hover{gap:1.1rem}
 .ubicacion--tattoo .ubicacion-cta{color:var(--tinta)}
 .ubicacion--luthier .ubicacion-cta{color:var(--ambar)}
+.ubicacion-acciones{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:1rem;
+}
+/* Redes en su color de marca real, no en ámbar/tinta: acá interesa que se
+   reconozcan como Instagram/Facebook a simple vista. */
+.ubicacion-social{display:flex;gap:.55rem}
+.ubicacion-social-link{
+  width:32px;height:32px;
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+  transition:transform .25s cubic-bezier(.34,1.56,.64,1);
+}
+.ubicacion-social-link svg{width:16px;height:16px;fill:#fff}
+.ubicacion-social-link:hover{transform:scale(1.12)}
+.ubicacion-social-link--instagram{
+  background:radial-gradient(circle at 30% 107%,#fdf497 0%,#fdf497 5%,#fd5949 45%,#d6249f 60%,#285aeb 90%);
+}
+.ubicacion-social-link--facebook{background:#1877f2}
 
 footer{
   padding:1.6rem;

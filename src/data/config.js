@@ -19,6 +19,9 @@ export const UBICACIONES = [
     ciudad: 'S2000BII Rosario, Santa Fe',
     mapaUrl: 'https://maps.app.goo.gl/LPzBL5aJbRza1NuG6',
     cid: '14855219056150540968',
+    redes: [
+      { tipo: 'instagram', url: 'https://www.instagram.com/federicomarvinluthier/' },
+    ],
   },
   {
     tipo: 'tattoo',
@@ -27,6 +30,10 @@ export const UBICACIONES = [
     ciudad: 'S2000 Rosario, Santa Fe',
     mapaUrl: 'https://maps.app.goo.gl/6CrUiK5kn49b5Uts7',
     cid: '14400708714676849228',
+    redes: [
+      { tipo: 'instagram', url: 'https://www.instagram.com/federicomarvintattoo/' },
+      { tipo: 'facebook', url: 'https://www.facebook.com/federicomarvintattoo/' },
+    ],
   },
 ]
 
